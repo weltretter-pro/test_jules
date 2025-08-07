@@ -6,22 +6,28 @@
 //
 
 import SwiftUI
+import Firebase
 
 @main
 struct meApp: App {
-    // In a real app, these would be managed by a service in the Logic layer.
+    // TODO: Please provide the actual GoogleService-Info.plist file
+    @StateObject private var authService = AuthenticationService()
     @State private var hasCompletedOnboarding = false
-    @State private var isUserAuthenticated = false
+
+    init() {
+        FirebaseApp.configure()
+    }
 
         var body: some Scene {
             WindowGroup {
                 // State-driven view logic to determine the initial screen.
                 if !hasCompletedOnboarding {
                     OnboardingView(hasCompletedOnboarding: $hasCompletedOnboarding)
-                } else if !isUserAuthenticated {
-                    LoginView(isUserAuthenticated: $isUserAuthenticated)
+                } else if authService.user == nil {
+                    LoginView(authService: authService)
                 } else {
                     MainTabView()
+                        .environmentObject(authService)
                 }
             }
         }

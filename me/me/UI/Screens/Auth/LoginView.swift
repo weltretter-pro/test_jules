@@ -1,7 +1,11 @@
 import SwiftUI
 
 struct LoginView: View {
-    @Binding var isUserAuthenticated: Bool
+    @StateObject private var viewModel: LoginViewModel
+
+    init(authService: AuthenticationService) {
+        _viewModel = StateObject(wrappedValue: LoginViewModel(authService: authService))
+    }
     
     var body: some View {
         VStack(spacing: 20) {
@@ -15,8 +19,8 @@ struct LoginView: View {
             
             Spacer()
             
-            PrimaryButton(title: "Sign Up", action: { isUserAuthenticated = true })
-            SecondaryButton(title: "Log In", action: { isUserAuthenticated = true })
+            PrimaryButton(title: "Sign in with Apple", action: viewModel.signInWithApple)
+            SecondaryButton(title: "Sign in with Google", action: viewModel.signInWithGoogle)
         }
         .padding(30)
     }
